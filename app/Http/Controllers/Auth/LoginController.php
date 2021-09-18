@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Session;
 
 
 class LoginController extends Controller
@@ -40,5 +41,13 @@ class LoginController extends Controller
         return redirect()->route('register')->withErrors([
             'national_card_id' => 'The provided credentials do not match our records. Please Register as  a New Patient.',
         ]);
+    }
+
+    public function logout(Request $request)
+    {
+        Session::flush();
+        Auth::logout();
+
+        return redirect()->route('login');
     }
 }
