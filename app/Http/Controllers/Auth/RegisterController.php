@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use DB;
 
 class RegisterController extends Controller
 {
@@ -36,16 +37,27 @@ class RegisterController extends Controller
             'nok_phone_number' => 'required|phone:GH',
         ]);
 
-        $user = User::create($request->except(['profile_pic']));
+        DB::beginTransaction();
 
-        if($request->profile_pic){
-            $image = $request->file('profile_pic');
-            $name = $user->id . '_profile_pic' . '.' .
-            $image->getClientOriginalExtension();
-            $folder = '/uploads/patients';
-            $filePath = $this->uploadOne($image, $folder, $name);
-            $user->profile_pic = $filePath;
-            $user->save();
+        try {
+            $user = User::create($request->except(['profile_pic']));
+
+            if($request->profile_pic){
+                $image = $request->file('profile_pic');
+                $name = $user->id . '_profile_pic' . '.' .
+                $image->getClientOriginalExtension();
+                $folder = '/uploads/patients';
+                $filePath = $this->uploadOne($image, $folder, $name);
+                $user->profile_pic = $filePath;
+                $user->save();
+            }
+            
+            DB::commit();
+        } catch (\Exception $exception) {
+            Log::error(['error' => $exception->getMessage()]);
+            DB::rollback();
+            session()->flash('error_message', 'Patient Registration Failed.');
+            return back();
         }
 
         if (Auth::login($user)) {
