@@ -42,8 +42,8 @@
                                 <label for="national_card_id" class="col col-form-label">{{ __('National Card ID :') }}</label>
 
                                 <div class="col">
-                                    <input id="national_card_id" type="text" class="form-control @error('national_card_id') is-invalid @enderror" name="national_card_id" value="{{ old('national_card_id') }}" required autocomplete="national_card_id" autofocus>
-    
+                                    <input id="national_card_id" type="text" class="form-control @error('national_card_id') is-invalid @enderror" name="national_card_id" value="{{ old('national_card_id') }}" required autocomplete="national_card_id" autofocus  onclick="addHash(this)" pattern="GHA-[0-9]{9}-[0-9]" title="must be in this format GHA-XXXXXXXXX-X">
+                                    
                                     @error('national_card_id')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
