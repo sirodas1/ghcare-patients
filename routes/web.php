@@ -30,4 +30,5 @@ Route::post('register', [RegisterController::class, 'store'])->name('register');
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('folder/{id}', [DashboardController::class, 'folder'])->name('folder'); 
+    Route::post('folder/lock/{id}', [DashboardController::class, 'openLockedFolder'])->name('open-locked-folder');
 });
